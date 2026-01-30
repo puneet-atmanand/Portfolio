@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-orbitron: "Poppins", sans-serif;
+  --font-rajdhani: "Inter", sans-serif;
+
+  --color-neon-cyan: hsl(180 100% 50%);
+  --color-neon-pink: hsl(320 100% 60%);
+  --color-neon-lime: hsl(120 100% 50%);
+  --color-deep-black: hsl(240 10% 4%);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  /* Light Mode Theme - Purple/Blue Gradient Focus */
+  --background: hsl(0 0% 100%);
+  /* White */
+  --foreground: hsl(222 47% 11%);
+  /* Dark Blue/Black */
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+
+  --primary: hsl(262 83% 58%);
+  /* Vivid Purple */
+  --primary-foreground: hsl(210 40% 98%);
+
+  --secondary: hsl(199 89% 48%);
+  /* Bright Blue */
+  --secondary-foreground: hsl(222 47% 11%);
+
+  --muted: hsl(210 40% 96.1%);
+  --muted-foreground: hsl(215.4 16.3% 46.9%);
+
+  --accent: hsl(210 40% 96.1%);
+  --accent-foreground: hsl(222 47% 11%);
+
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 40% 98%);
+
+  --border: hsl(214.3 31.8% 91.4%);
+  --input: hsl(214.3 31.8% 91.4%);
+  --ring: hsl(262 83% 58%);
+
+  --radius: 0.5rem;
+
+  /* Custom Variables for Reference Image Matching */
+  --color-neon-cyan: hsl(262 83% 58%);
+  /* Remapped to Purple for compatibility */
+  --color-neon-pink: hsl(320 100% 60%);
+  /* Kept Pink */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-rajdhani bg-background text-foreground selection:bg-purple-100 selection:text-purple-900;
+    background-image: radial-gradient(circle at 50% 0%, rgba(120, 119, 198, 0.1) 0%, rgba(255, 255, 255, 0) 50%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-orbitron tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 10px var(--color-neon-cyan), 0 0 20px var(--color-neon-cyan);
+  }
+
+  .text-glow-pink {
+    text-shadow: 0 0 10px var(--color-neon-pink), 0 0 20px var(--color-neon-pink);
+  }
+
+  .box-glow {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  }
+
+  .glitch {
+    position: relative;
+  }
+
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch::before {
+    left: 2px;
+    text-shadow: -1px 0 red;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim-1 5s infinite linear alternate-reverse;
+  }
+
+  .glitch::after {
+    left: -2px;
+    text-shadow: -1px 0 blue;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim-2 5s infinite linear alternate-reverse;
+  }
+
+  @keyframes glitch-anim-1 {
+    0% {
+      clip: rect(20px, 9999px, 10px, 0);
+    }
+
+    100% {
+      clip: rect(80px, 9999px, 100px, 0);
+    }
+  }
+
+  @keyframes glitch-anim-2 {
+    0% {
+      clip: rect(100px, 9999px, 20px, 0);
+    }
+
+    100% {
+      clip: rect(10px, 9999px, 80px, 0);
+    }
+  }
+}
