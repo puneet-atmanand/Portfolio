@@ -1,0 +1,18 @@
+[build]
+  # Configures the build command - using build:static to avoid server-side build issues
+  command = "npm run build:static"
+  # Configures the directory where the build output is generated
+  publish = "dist/public"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[dev]
+  # Configures the directory to serve during development
+  framework = "#static"
+
+# Handle SPA Routing (Redirects all paths to index.html)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
