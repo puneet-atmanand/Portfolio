@@ -1,10 +1,58 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Github, MapPin, Send, Instagram } from "lucide-react";
+import { Mail, Linkedin, Github, MapPin, Send, Instagram, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import { useToast } from "@/hooks/use-toast";
+import emailjs from "@emailjs/browser";
 
 export default function ContactSection() {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const { toast } = useToast();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const onSubmit = async (data: any) => {
+        setIsLoading(true);
+        try {
+            // Retrieve keys from environment variables
+            const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+            const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+            const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+            if (!serviceId || !templateId || !publicKey || serviceId === "your_service_id_here") {
+                throw new Error("EmailJS credentials are missing. Please check your .env.local file.");
+            }
+
+            await emailjs.send(
+                serviceId,
+                templateId,
+                {
+                    from_name: data.name,
+                    from_email: data.email,
+                    message: data.message,
+                },
+                publicKey
+            );
+
+            toast({
+                title: "Message Sent!",
+                description: "Thanks for reaching out. I'll get back to you ASAP.",
+            });
+            reset();
+        } catch (error: any) {
+            console.error("EmailJS Error:", error);
+            toast({
+                title: "Error",
+                description: error.message || "Failed to send message. Please try again later.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <section id="contact" className="py-20 relative overflow-hidden bg-white">
             {/* Background Elements */}
@@ -110,16 +158,18 @@ export default function ContactSection() {
                         viewport={{ once: true }}
                         whileHover={{ scale: 1.01 }}
                     >
-                        <form className="bg-white border border-gray-100 border-l-4 border-l-pink-600 p-8 rounded-2xl rounded-l-none shadow-sm hover:shadow-xl transition-all duration-300 space-y-6">
+                        <form onSubmit={handleSubmit(onSubmit)} className="bg-white border border-gray-100 border-l-4 border-l-pink-600 p-8 rounded-2xl rounded-l-none shadow-sm hover:shadow-xl transition-all duration-300 space-y-6">
                             <h3 className="text-2xl font-bold text-gray-900 mb-6 font-poppins">Send Me a Message</h3>
 
                             <div className="space-y-2">
                                 <label htmlFor="name" className="text-sm font-medium text-gray-700 font-inter">Your Name</label>
                                 <Input
                                     id="name"
+                                    {...register("name", { required: true })}
                                     placeholder="John Doe"
                                     className="bg-gray-50 border-gray-200 text-gray-900 focus:border-pink-500 focus:ring-pink-500"
                                 />
+                                {errors.name && <span className="text-red-500 text-xs">Name is required</span>}
                             </div>
 
                             <div className="space-y-2">
@@ -127,22 +177,34 @@ export default function ContactSection() {
                                 <Input
                                     id="email"
                                     type="email"
+                                    {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
                                     placeholder="john@example.com"
                                     className="bg-gray-50 border-gray-200 text-gray-900 focus:border-pink-500 focus:ring-pink-500"
                                 />
+                                {errors.email && <span className="text-red-500 text-xs">Valid email is required</span>}
                             </div>
 
                             <div className="space-y-2">
                                 <label htmlFor="message" className="text-sm font-medium text-gray-700 font-inter">Message</label>
                                 <Textarea
                                     id="message"
+                                    {...register("message", { required: true })}
                                     placeholder="Tell me about your project..."
                                     className="bg-gray-50 border-gray-200 text-gray-900 focus:border-pink-500 focus:ring-pink-500 min-h-[150px]"
                                 />
+                                {errors.message && <span className="text-red-500 text-xs">Message is required</span>}
                             </div>
 
-                            <Button className="w-full bg-[#C2167E] hover:bg-[#A01268] text-white font-bold font-poppins transition-all shadow-lg hover:shadow-xl">
-                                Send Message <Send size={18} className="ml-2" />
+                            <Button type="submit" disabled={isLoading} className="w-full bg-[#C2167E] hover:bg-[#A01268] text-white font-bold font-poppins transition-all shadow-lg hover:shadow-xl">
+                                {isLoading ? (
+                                    <>
+                                        Sending... <Loader2 className="ml-2 animate-spin" size={18} />
+                                    </>
+                                ) : (
+                                    <>
+                                        Send Message <Send size={18} className="ml-2" />
+                                    </>
+                                )}
                             </Button>
                         </form>
                     </motion.div>
