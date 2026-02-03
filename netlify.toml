@@ -1,0 +1,15 @@
+[build]
+  # Configures the build command
+  command = "npm run build"
+  # Configures the directory where the build output is generated
+  publish = "dist/public"
+
+[dev]
+  # Configures the directory to serve during development
+  framework = "#static"
+
+# Handle SPA Routing (Redirects all paths to index.html)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
